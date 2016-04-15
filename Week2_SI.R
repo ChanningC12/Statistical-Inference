@@ -16,3 +16,14 @@ qnorm(0.75,mean=1020,sd=50)
 # The number of people show up at a bus stop is Poisson distribution with mean of 2.5 per hour
 # Watching 4 hours, what is the probability that 3 or fewer people show up for the whole time
 ppois(3,lambda = 2.5*4)
+
+# Asymptotics
+# Law of Large Number
+n = 1000
+means = cumsum(rnorm(n))/(1:n)
+means = cumsum(sample(0:1,n,replace = T))/(1:n)
+plot(means)
+
+# The CLT, the distribution of averages of iid variables (properly normalized) becomes that of a standard normal as the sample size increses
+# roll n dice
+0.56 + c(-1,1)*qnorm(0.975)*sqrt(0.56*0.44/100)
