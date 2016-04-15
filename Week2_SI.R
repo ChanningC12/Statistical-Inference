@@ -9,3 +9,10 @@ pnorm(1.96,mean=0,sd=1,lower.tail=F)
 pnorm(1160,mean=1020,sd=50,lower.tail=F)
 # of (1160-1020)/50 = 2.8
 pnorm(2.8,lower.tail=F)
+qnorm(0.75,mean=1020,sd=50)
+
+# Poisson Distribution, Used to model counts
+# P(X = x, lambda) = (lambda**x * e**(-lambda)) / x!
+# The number of people show up at a bus stop is Poisson distribution with mean of 2.5 per hour
+# Watching 4 hours, what is the probability that 3 or fewer people show up for the whole time
+ppois(3,lambda = 2.5*4)
