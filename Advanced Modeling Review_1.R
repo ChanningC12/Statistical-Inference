@@ -99,6 +99,22 @@ lm.influence(fit)$hat
 sum(lm.influence(fit)$hat)
 
 
+# Transformation
+# 1. Heterscedasticity / non-systemetric error distribution, transform dependent variable
+# 2. Underlying relationship nonlinear: transform predictor variable
+
+# Modeling heterscedatic data:
+    # Use variance stablizing transformations
+    # Use weighted least square
+    # Use a different model, Poisson or Logistic regression
+
+# Multiplicative Models: y = b0*x1**b1*x2**b2
+# take the log on both sides, log(y) = log(b0) + b1*log(x1) + b2*log(x2) + log(e)
+
+
+
+
+
 
 
 
