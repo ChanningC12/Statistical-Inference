@@ -16,3 +16,25 @@ md + c(-1,1)*qt(0.975,n1+n2-2)*semd,
 t.test(g2,g1,paired = FALSE, var.equal = TRUE)$conf,
 t.test(g2,g1,paired = TRUE)$conf
     )
+
+library(datasets)
+data(ChickWeight)
+library(reshape2)
+library(dplyr)
+wideCW = dcast(ChickWeight,Diet + Chick ~ Time, value.var = "weight") # reshape, long to wide
+names(wideCW)[(-(1:2))] = paste("time",names(wideCW)[-(1:2)],sep="")
+wideCW = mutate(wideCW,
+                gain = time21 - time0
+                )
+
+wideCW14 = subset(wideCW,Diet %in% c(1,4))
+rbind(
+t.test(gain~Diet,paired = F, var.equal=T,data=wideCW14)$conf,
+t.test(gain~Diet,paired = F, var.equal=F,data=wideCW14)$conf
+    )
+
+
+
+
+
+
