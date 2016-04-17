@@ -109,12 +109,61 @@ sum(lm.influence(fit)$hat)
     # Use a different model, Poisson or Logistic regression
 
 # Multiplicative Models: y = b0*x1**b1*x2**b2
-# take the log on both sides, log(y) = log(b0) + b1*log(x1) + b2*log(x2) + log(e)
+# Variance stablizing tranformation: take the log on both sides, log(y) = log(b0) + b1*log(x1) + b2*log(x2) + log(e)
 
+# dummy variable
+fit = lm(defect~am,quality)
+summary(fit)
+t.test(defect~am,quality,var.equal=T)
 
+fit = lm(sales~ad+reps+as.factor(eff),data=click)
+drop1(fit,test="F")
+summary(fit)
 
+# Handle missing values
+agemiss = data.frame(
+    age = c(NA,NA,35,NA,81,39,20,25,62,NA,45,57,36,39,NA,48,36,NA,NA,30,
+            78,35,NA,20,26,28,44,30,31,32,72,33,33,NA,55,37,36,43,40,NA),
+    y = c(2.9,2.8,8.4,2.8,4.5,8.3,9.4,9.1,5.6,2.9,7.4,6.3,7.7,8.1,3.2,6.5,
+          7.9,3.0,3.0,9.0,5.1,8.8,3.4,9.5,8.9,8.3,7.4,8.3,8.6,8.7,5.3,8.3,
+          7.8,3.2,6.6,8.4,8.6,7.8,7.6,3.7))
+# treat missing value as seperate category and include a dummy
+    # create a dummy xmiss that equals 1 when x is missing and 0 otherwise
+    # when x is missing, x=0
+    # regress y on both x and xmiss
+agemiss$xmiss = is.na(agemiss$age)
+agemiss$age[is.na(agemiss$age)]=0 # set missings to 0
+plot(agemiss$age,agemiss$y)
+fit = lm(y~age + xmiss, agemiss)
+summary(fit)
 
+# Interaction: two nonlinear combinations of two or more predictor variables
+# x1:x2
+# x1+x2+x1:x2=x1*x2
+# (a+b+c)^2 - a:b = a + b + c + a:c + b:c
+# Example
+course = data.frame(
+    type=factor(c(rep(1,20), rep(2,20)), 1:2, c("Trad","Online")),
+    length=factor(c(rep(1,10), rep(2,10), rep(1,10), rep(2,10)),
+                  1:2, c("Condensed","Regular")),
+    act=c(26,27,25,21,21,18,24,19,20,18, 34,24,35,31,28,28,21,23,29,26,
+          27,29,30,24,30,21,32,20,28,29, 24,16,22,20,23,21,19,19,24,25))
+fit = aov(act~type*length,course)
+summary(fit)
+with(course,interaction.plot(length,type,act,col=1:2))
+tapply(course$act,course[,1:2],mean)
+fit$coef
 
+# Orange Juice example
+oj = data.frame(brand=c(rep("A",12), rep("B",12), rep("C",12)),
+                time = factor(rep(c(0,0,0,0,3,3,3,3,7,7,7,7), 3)),
+                acid = c(52.6,54.2,49.8,46.5,49.4,49.2,42.8,53.2,42.7,48.8,40.4,47.6,56,48,
+                         49.6,48.4,48.8,44,44,42.4,49.2,44,42,43.2,52.5,52,51.8,53.6,48,47,48.2,
+                         49.6,48.5,43.4,45.2,47.6))
+with(oj,interaction.plot(time,brand,acid,col=1:3))
+fit = lm(acid~time*brand,oj)
+summary(fit)
+drop1(fit,test="F")
 
 
 
