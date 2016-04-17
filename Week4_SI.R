@@ -11,3 +11,4 @@ pnorm(mu0 + z*sigma/sqrt(n), mean = mua, sd = sigma/sqrt(n), lower.tail = F)
 # T-test power
 power.t.test(n=16,delta=2,sd=4,type="one.sample",alt="one.side")$power  # delta is the difference of means
 power.t.test(n=16,power=0.8,sd=4,type="one.sample",alt="one.side")$delta
+
