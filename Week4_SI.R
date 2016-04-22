@@ -12,3 +12,15 @@ pnorm(mu0 + z*sigma/sqrt(n), mean = mua, sd = sigma/sqrt(n), lower.tail = F)
 power.t.test(n=16,delta=2,sd=4,type="one.sample",alt="one.side")$power  # delta is the difference of means
 power.t.test(n=16,power=0.8,sd=4,type="one.sample",alt="one.side")$delta
 
+
+# Bootstrap
+x = father.son$sheight
+n = length(x)
+B = 10000
+resample = matrix(sample(x,n*B,replace=T),B,n)
+resampledMedians = apply(resample,1,median)
+plot(density(resampledMedians),col="red")
+
+
+
+
