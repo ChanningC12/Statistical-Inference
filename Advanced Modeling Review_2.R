@@ -21,7 +21,7 @@ step(fit)
 fit = lm(defect~.,quality)
 step(fit)
 
-# Shrinkage
+# Shrinkage, deal with multicollinearity
 # Ridge Regression, include a penalty term in the least squares
 bodyfat = data.frame(
     x1=c(19.5,24.7,30.7,29.8,19.1,25.6,31.4,27.9,22.1,25.5,31.1,30.4,
@@ -34,8 +34,36 @@ bodyfat = data.frame(
         11.7,17.8,12.8,23.9,22.6,25.4,14.8,21.1)
 )
 
+plot(bodyfat)
+round(cor(bodyfat),2)
+fit = lm(y~.,bodyfat)
+vif(fit)
+library(MASS)
+Zbodyfat = data.frame(scale(bodyfat)) # standardize data
+round(cor(Zbodyfat),2)
+fit2 = lm.ridge(y~x1+x2+x3-1,Zbodyfat,lambda=seq(0,0.4,length=41)) # ridge regression
+plot(fit2)
+abline(h=0)
+round(coef(fit2),4)
 
+# The Lasso
 
+# Test set, train set, K-fold
+# test set, draw a sample of obs, set them in a safe while build the model using training set (should be large enough to estimate reliable estimates)
+# k-fold: split available data into K roughly equal-sized parts
 
-
-
+# test set in R
+set.seed(12345)
+View(employee)
+employee$train = runif(nrow(employee))>0.5 # assign to test/train set
+dim(employee)
+table(employee$train)
+fit = lm(Income~Age + Years, subset(employee,train==T))
+summary(fit)
+anova(fit)
+sum(fit$residuals^2) # training SSE
+deviance(fit) # or deviance
+mean(fit$residuals^2) # training MSE
+yhat = predict(fit,subset(employee,train==F))
+length(yhat)
+mean((employee$Income[!employee$train]-yhat)^2) #test MSE
