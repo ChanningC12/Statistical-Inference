@@ -67,3 +67,16 @@ mean(fit$residuals^2) # training MSE
 yhat = predict(fit,subset(employee,train==F))
 length(yhat)
 mean((employee$Income[!employee$train]-yhat)^2) #test MSE
+
+# k-fold
+set.seed(54321)
+employee$cv = as.integer(runif(nrow(employee))*5)
+table(employee$cv)
+yyhat = rep(NA,nrow(employee))
+for (i in 0:4){
+    fit = lm(Income~Age+Years,employee,subset=(cv!=i))
+    yyhat[employee$cv==i] = predict(fit,employee[employee$cv==i,])
+}
+mean((employee$Income - yyhat)^2) # test MSE
+mean(fit$residuals^2) # compare with training
+
