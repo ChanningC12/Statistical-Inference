@@ -58,3 +58,28 @@ sum(diag(table(gpa$admit, fit$class))) / nrow(gpa) # classification rate
 fit2 = qda(admit~GPA+GMAT,data=gpa,CV=T)
 table(gpa$admit,fit2$class)
 sum(diag(table(gpa$admit, fit2$class))) / nrow(gpa) # classification rate
+
+# GNB estimate of GMAT example
+library(e1071)
+fit = naiveBayes(as.factor(admit)~GPA+GMAT,data=gpa)
+fit
+table(predict(fit, gpa), gpa$admit)
+
+post = predict(fit, gpa, type="raw") # raw returns probs instead of class
+post[1,]
+gpa[1,]
+f1 = dnorm(2.96, 3.403871, 0.2087052) * dnorm(596, 561.2258, 67.95769)
+f2 = dnorm(2.96, 2.482500, 0.1834368) * dnorm(596, 447.0714, 62.37992)
+f3 = dnorm(2.96, 2.992692, 0.1723150) * dnorm(596, 446.2308, 47.40153)
+p=table(gpa$admit)/nrow(gpa)
+prods = c(f1*p[1], f2*p[2], f3*p[3])
+prods/sum(prods)
+
+library(pls)
+fit = lda(admit~GPA+GMAT,data=gpa);predplot(fit,"LDA")
+fit2 = qda(admit~GPA+GMAT,data=gpa);predplot(fit2,"QDA")
+
+
+
+
+    
