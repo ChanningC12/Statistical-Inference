@@ -48,11 +48,13 @@ gpa = read.csv("Desktop/gmatgpa.csv")
 names(gpa)
 plot(gpa$GPA, gpa$GMAT, col=gpa$admit, pch=gpa$admit, xlab="GPA", ylab="GMAT")
 # fit LDA model
+library(MASS)
+fit = lda(admit~GPA+GMAT,data=gpa,CV=T)
+names(fit)
+table(gpa$admit,fit$class)
+sum(diag(table(gpa$admit, fit$class))) / nrow(gpa) # classification rate
 
-
-
-
-
-
-
-
+# fit QDA model
+fit2 = qda(admit~GPA+GMAT,data=gpa,CV=T)
+table(gpa$admit,fit2$class)
+sum(diag(table(gpa$admit, fit2$class))) / nrow(gpa) # classification rate
