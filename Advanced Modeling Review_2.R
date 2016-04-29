@@ -80,3 +80,6 @@ for (i in 0:4){
 mean((employee$Income - yyhat)^2) # test MSE
 mean(fit$residuals^2) # compare with training
 
+
+
+
