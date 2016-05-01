@@ -82,3 +82,5 @@ partialPlot(fit,gpa,"Math")
 
 
 
+
+
