@@ -39,6 +39,45 @@ abline(v=c(1,2))
 # cubic model
 fit = lm(y ~ x+I(x^2)+I(x^3)+I((x>1)*(x-1)^3)+I((x>2)*(x-2)^3), dat)
 summary(fit)
+plot(dat[,1:2])
+x=seq(0,3,length=100)
+lines(x,sin(x*pi/2))
+lines(x,predict(fit,data.frame(x=x)),col=2)
+abline(v=c(1,2))
+
+# splines
+library(splines)
+fit = lm(y~bs(x),dat)
+drop1(fit,test="F")
+fit = lm(y~bs(x,Boundary.knots = c(0,3)),dat)
+plot(dat[,1:2],pch=16)
+lines(x, predict(fit, data.frame(x=x)))
+lines(x, sin(x*pi/2), col=2) # true function
+
+fit = lm(y ~ bs(x, df=3, Boundary.knots=c(0,3)), dat)
+lines(x, predict(fit, data.frame(x=x)), col=2)
+c(mean(fit$residuals^2), mean((test$y-predict(fit, test))^2))
+
+fit = lm(y ~ bs(x, df=5, Boundary.knots=c(0,3)), dat)
+lines(x, predict(fit, data.frame(x=x)), col=3)
+
+fit = lm(y ~ bs(x, df=11, Boundary.knots=c(0,3)), dat)
+lines(x, predict(fit, data.frame(x=x)), col=4)
+
+fit = lm(y ~ bs(x, df=17, Boundary.knots=c(0,3)), dat)
+lines(x, predict(fit, data.frame(x=x)), col=5)
+legend(.5,0, paste("df=",c(3,5,11,17)),col=2:5,lty=1)
+
+
+# Test Scores Predicting GPA
+library(gam)
+gpa = read.csv("Desktop/gpa.csv")
+fit = gam(GPA~s(Verbal)+s(Math),data=gpa)
+summary(fit)
+par(mfrow=c(1,2))
+plot.gam(fit, se=T, scale=2.5)
+mean(fit$residuals^2) # mean squared residuals
+1-fit$deviance/fit$null.deviance # R-square
 
 
 
